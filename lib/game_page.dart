@@ -1,21 +1,5 @@
 import 'package:flutter/material.dart';
 
-void main() {
-  runApp(const MyApp());
-}
-
-class MyApp extends StatelessWidget {
-  const MyApp({Key? key}) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return const MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: GamePage()
-    );
-  }
-}
-
 class GamePage extends StatefulWidget {
   const GamePage({Key? key}) : super(key: key);
 
@@ -23,17 +7,111 @@ class GamePage extends StatefulWidget {
   State<GamePage> createState() => _GamePageState();
 }
 
+List<List<List<int>>> lines = [
+  [
+    [0, 0],
+    [0, 1],
+    [0, 2],
+  ],
+  [
+    [1, 0],
+    [1, 1],
+    [1, 2],
+  ],
+  [
+    [2, 0],
+    [2, 1],
+    [2, 2],
+  ],
+  [
+    [0, 0],
+    [1, 0],
+    [2, 0],
+  ],
+  [
+    [0, 1],
+    [1, 1],
+    [2, 1],
+  ],
+  [
+    [0, 2],
+    [1, 2],
+    [2, 2],
+  ],
+  [
+    [0, 0],
+    [1, 1],
+    [2, 2],
+  ],
+  [
+    [0, 2],
+    [1, 1],
+    [2, 0],
+  ],
+];
+
 class _GamePageState extends State<GamePage> {
+  List<List<String>> field = [
+    ["", "", ""],
+    ["", "", ""],
+    ["", "", ""],
+  ];
+  String currentPlayer = "X";
+  bool finished = false;
+  String winner = "";
+
+  void updateField(String player, int row, int column) {
+    if (finished) return;
+    if (field[row][column] != "") return;
+    setState(() {
+      field[row][column] = player;
+      currentPlayer = player == "X" ? "O" : "X";
+    });
+    checkIfGameFinished();
+  }
+
+  void checkIfGameFinished() {
+    for (var line in lines) {
+      String first = field[line[0][0]][line[0][1]];
+      String second = field[line[1][0]][line[1][1]];
+      String third = field[line[2][0]][line[2][1]];
+      if (first != "" && first == second && second == third) {
+        print("$first の勝ち！");
+        finished = true;
+        winner = first;
+        return;
+      }
+    }
+
+    bool isFilled = true;
+    for (int row = 0; row < 3; row++) {
+      for (int column = 0; column < 3; column++) {
+        if (field[row][column] == "") {
+          isFilled = false;
+        }
+      }
+    }
+    if (isFilled) {
+      print("引き分け");
+      finished = true;
+      winner = "";
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    String message = "$currentPlayer の手番です";
+    if (finished) {
+      message = winner == "" ? "引き分け" : "$winner の勝ち！";
+    }
     return Scaffold(
         body: Center(
           child: Column(mainAxisSize: MainAxisSize.min, children: [
-            const Padding(
-              padding: EdgeInsets.all(8.0),
+            Padding(
+              padding: const EdgeInsets.all(8.0),
               child: Text(
-                "Xの手番です",
-                style: TextStyle(fontSize: 40),
+                message,
+                style: const TextStyle(fontSize: 40),
               ),
             ),
             Container(
@@ -49,10 +127,12 @@ class _GamePageState extends State<GamePage> {
                       height: 100.0,
                       color: Colors.black12,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "00",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 0, 0);
+                          },
+                          child: Text(
+                            field[0][0],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -62,10 +142,12 @@ class _GamePageState extends State<GamePage> {
                       width: 100.0,
                       height: 100.0,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "01",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 0, 1);
+                          },
+                          child: Text(
+                            field[0][1],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -76,10 +158,12 @@ class _GamePageState extends State<GamePage> {
                       height: 100.0,
                       color: Colors.black12,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "02",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 0, 2);
+                          },
+                          child: Text(
+                            field[0][2],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -89,10 +173,12 @@ class _GamePageState extends State<GamePage> {
                       width: 100.0,
                       height: 100.0,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "10",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 1, 0);
+                          },
+                          child: Text(
+                            field[1][0],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -103,10 +189,12 @@ class _GamePageState extends State<GamePage> {
                       height: 100.0,
                       color: Colors.black12,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "11",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 1, 1);
+                          },
+                          child: Text(
+                            field[1][1],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -116,10 +204,12 @@ class _GamePageState extends State<GamePage> {
                       width: 100.0,
                       height: 100.0,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "12",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 1, 2);
+                          },
+                          child: Text(
+                            field[1][2],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -130,10 +220,12 @@ class _GamePageState extends State<GamePage> {
                       height: 100.0,
                       color: Colors.black12,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "20",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 2, 0);
+                          },
+                          child: Text(
+                            field[2][0],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -143,10 +235,12 @@ class _GamePageState extends State<GamePage> {
                       width: 100.0,
                       height: 100.0,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "21",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 2, 1);
+                          },
+                          child: Text(
+                            field[2][1],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -157,10 +251,12 @@ class _GamePageState extends State<GamePage> {
                       height: 100.0,
                       color: Colors.black12,
                       child: TextButton(
-                          onPressed: () {},
-                          child: const Text(
-                            "22",
-                            style: TextStyle(fontSize: 50),
+                          onPressed: () {
+                            updateField(currentPlayer, 2, 2);
+                          },
+                          child: Text(
+                            field[2][2],
+                            style: const TextStyle(fontSize: 50),
                           )),
                     ),
                   ),
@@ -169,8 +265,12 @@ class _GamePageState extends State<GamePage> {
             ),
             Padding(
               padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(onPressed: () {}, child: const Text("やめる")),
-            ),
+              child: ElevatedButton(
+                  onPressed: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Text("やめる")),
+            )
           ]),
         ));
   }
