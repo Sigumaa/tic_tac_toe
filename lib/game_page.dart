@@ -98,6 +98,52 @@ class _GamePageState extends State<GamePage> {
     }
   }
 
+  Widget _buildCell(int row, int col) {
+    return Align(
+      alignment: _getAlignment(row, col),
+      child: Container(
+        width: 100.0,
+        height: 100.0,
+        color: (row + col) % 2 == 0 ? Colors.black12 : Colors.blue.shade100,
+        child: TextButton(
+          onPressed: () => updateField(currentPlayer, row, col),
+          child: Text(
+            field[row][col],
+            style: const TextStyle(fontSize: 50),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Alignment _getAlignment(int row, int col) {
+    if (row == 0) {
+      if (col == 0) {
+        return Alignment.topLeft;
+      } else if (col == 1) {
+        return Alignment.topCenter;
+      } else {
+        return Alignment.topRight;
+      }
+    } else if (row == 1) {
+      if (col == 0) {
+        return Alignment.centerLeft;
+      } else if (col == 1) {
+        return Alignment.center;
+      } else {
+        return Alignment.centerRight;
+      }
+    } else {
+      if (col == 0) {
+        return Alignment.bottomLeft;
+      } else if (col == 1) {
+        return Alignment.bottomCenter;
+      } else {
+        return Alignment.bottomRight;
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     String message = "$currentPlayer の手番です";
@@ -105,8 +151,10 @@ class _GamePageState extends State<GamePage> {
       message = winner == "" ? "引き分け" : "$winner の勝ち！";
     }
     return Scaffold(
-        body: Center(
-          child: Column(mainAxisSize: MainAxisSize.min, children: [
+      body: Center(
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: Text(
@@ -120,158 +168,22 @@ class _GamePageState extends State<GamePage> {
               height: 300,
               child: Stack(
                 children: [
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      color: Colors.black12,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 0, 0);
-                          },
-                          child: Text(
-                            field[0][0],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topCenter,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 0, 1);
-                          },
-                          child: Text(
-                            field[0][1],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.topRight,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      color: Colors.black12,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 0, 2);
-                          },
-                          child: Text(
-                            field[0][2],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 1, 0);
-                          },
-                          child: Text(
-                            field[1][0],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      color: Colors.black12,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 1, 1);
-                          },
-                          child: Text(
-                            field[1][1],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 1, 2);
-                          },
-                          child: Text(
-                            field[1][2],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomLeft,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      color: Colors.black12,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 2, 0);
-                          },
-                          child: Text(
-                            field[2][0],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 2, 1);
-                          },
-                          child: Text(
-                            field[2][1],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
-                  Align(
-                    alignment: Alignment.bottomRight,
-                    child: Container(
-                      width: 100.0,
-                      height: 100.0,
-                      color: Colors.black12,
-                      child: TextButton(
-                          onPressed: () {
-                            updateField(currentPlayer, 2, 2);
-                          },
-                          child: Text(
-                            field[2][2],
-                            style: const TextStyle(fontSize: 50),
-                          )),
-                    ),
-                  ),
+                  _buildCell(0, 0),
+                  _buildCell(0, 1),
+                  _buildCell(0, 2),
+                  _buildCell(1, 0),
+                  _buildCell(1, 1),
+                  _buildCell(1, 2),
+                  _buildCell(2, 0),
+                  _buildCell(2, 1),
+                  _buildCell(2, 2),
                 ],
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  child: const Text("やめる")),
-            )
-          ]),
-        ));
+          ],
+        ),
+      ),
+    );
   }
+
 }
